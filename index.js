@@ -4,19 +4,19 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 
-let myDatabase = new DataStore(`mongodb+srv://Habenzy:${process.env.DB_PASSWORD}@cluster0-4eale.mongodb.net/test?retryWrites=true&w=majority`, 'notebook', 'entries')
+let myDatabase = new DataStore(`mongodb+srv://Habenzy:${process.env.DB_PASSWORD}@cluster0-4eale.mongodb.net/test?retryWrites=true&w=majority`, 'notebook', 'entries') // this is where our database lives. it's a remote url mapping to our remote mongodb cluster, we would otherwise be using the mongodb instance on our harddrive
 
 app.use(express.static('./public'))
-app.use(bodyParser())
+app.use(bodyParser()) // allows express to deal with form submissions 
 
-app.get('/posts', showAll)
+app.get('/posts', showAll) // request response handlers 
 
-app.post('/posts', insert)
+app.post('/posts', insert) // 
 
 async function showAll(req, res) {
   let entries = await myDatabase.getAll()
 
-  res.type('application/json').send(JSON.stringify(entries))
+  res.type('application/json').send(JSON.stringify(entries)) // send our json as a string as a response, this is what's called our api endpoint with the posts. this is triggered by our fetch in index.html
 
 }
 
@@ -26,7 +26,7 @@ async function insert(req, res) {
   let content = req.body.message
 
   await myDatabase.insertDoc({name: name, content: content})
-  res.redirect('/')
+  res.redirect('/') // redirect automatically re-freshes and presents new data
 }
 
 async function showOne() {
